@@ -166,6 +166,17 @@ by including things like "I am really sad," before your text. I've built an auto
 take advantage of this. It works by attempting to redact any text in the prompt surrounded by brackets. For example, the
 prompt "\[I am really sad,\] Please feed me." will only speak the words "Please feed me" (with a sad tonality).
 
+
+### Creating the Audio Clips
+
+```shell
+ ffmpeg -i ./input.mp3 -acodec pcm_f32le -ar 22050 ./input.wav
+```
+
+```shell
+ ffmpeg -i ./input.wav -c copy -map 0 -segment_time 00:00:10 -f segment -reset_timestamps 1 ./output%03d.wav
+```
+
 ### Playing with the voice latent
 
 Tortoise ingests reference clips by feeding them through individually through a small submodel that produces a point latent,
