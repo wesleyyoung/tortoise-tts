@@ -14,3 +14,7 @@ torchaudio
 threadpoolctl
 llvmlite
 appdirs
+Flask[async]
+Flask-RQ2
+moviepy
+pydub

@@ -1,0 +1,41 @@
+version: '3'
+services:
+  chuckwalla:
+    image: wyoung121/chuckwalla:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chuckwalla
+    environment:
+      - PORT=5001
+      - REDIS_URL=redis://redis:6379/0
+    ports:
+      - "5001:5001"
+    volumes:
+      - shared_volume:/root
+      - results_volume:/opt/results
+#      - models_volume:/opt/app/current/tortoise/voices
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+  worker:
+    image: wyoung121/chuckwalla:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ["sh", "-c"]
+    command: [ "rq worker --url redis://redis:6379 read" ]
+    environment:
+      - PORT=5008
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+    volumes:
+      - shared_volume:/root
+      - results_volume:/opt/results
+#      - models_volume:/opt/app/current/tortoise/voices
+volumes:
+  shared_volume:
+  results_volume:
+  models_volume:
